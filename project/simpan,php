@@ -1,0 +1,40 @@
+<?php
+$servername = "localhost";
+$username = "username";
+$password = "password";
+$dbname = "exampledb";
+
+// Membuat koneksi
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Memeriksa koneksi
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Membuat tabel
+$sql = "CREATE TABLE IF NOT EXISTS data (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    value FLOAT NOT NULL
+)";
+$conn->query($sql);
+
+// Menambahkan data
+$stmt = $conn->prepare("INSERT INTO data (name, value) VALUES (?, ?)");
+$stmt->bind_param("sd", $name, $value);
+
+$name = "example";
+$value = 123.45;
+$stmt->execute();
+
+// Menampilkan data
+$result = $conn->query("SELECT id, name, value FROM data");
+while($row = $result->fetch_assoc()) {
+    echo "id: " . $row["id"]. " - Name: " . $row["name"]. " - Value: " . $row["value"]. "<br>";
+}
+
+// Menutup koneksi
+$conn->close();
+?>
+
